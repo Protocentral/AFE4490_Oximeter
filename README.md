@@ -37,8 +37,8 @@ Using Brainbay
  In Brainbay, use Design>Load Design to load the configuration file that you downloaded in the previous link.
  Right click the EEG block in brainbay, and select the right COM port and baud rate 57600, press connect and then press play  (F7). In Brainbay, now the following are displayed
 
-[![Oximeter](https://www.protocentral.com/img/cms/ads1292r_shield/afe4400brainbayy.png)  
-]
+![Oximeter](https://www.protocentral.com/img/cms/ads1292r_shield/afe4400brainbayy.png)  
+
  
 
 License Information
