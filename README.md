@@ -26,11 +26,11 @@ Repository Contents
 * **/Libraries** - Arduino library and example sketches.
 * **/Hardware** - All Eagle design files (.brd, .sch)
 * **/extras** - includes the datasheet
-* **/Brainbay - setup  and configuration file
+* **/Brainbay** - setup  and configuration file
  
 Using Brainbay
 ----------------
- Brainbay is an open-source application originally desgined for bio-feedback applications, it can be easily used for         visualizing the ECG in real-time. Brainbay can be downloaded from the following link:
+ Brainbay is an open-source application originally desgined for bio-feedback applications, it can be easily used for          visualizing the ECG in real-time. Brainbay can be downloaded from the following link:
  https://github.com/Protocentral/AFE4400_Oximeter/tree/master/Brainbay_setup_and_configfiles
  You can use the Windows installer and follow the instructions on the screen to install Brainbay on your computer
  Brainbay now has to be configured to work for our data format and that can be achieved by the using the configuration file   https://github.com/Protocentral/AFE4400_Oximeter/tree/master/Brainbay_setup_and_configfiles 
