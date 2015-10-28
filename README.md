@@ -40,6 +40,10 @@ Using Brainbay
 ![Oximeter](https://www.protocentral.com/img/cms/ads1292r_shield/afe4400brainbayy.png)  
 
  
+Oxygen Saturation level displayed in the Serial Terminal
+
+![OximeterSerialOutput](https://www.protocentral.com/img/cms/ads1292r_shield/oximeter_serial_1.png)
+
 
 License Information
 -------------------
