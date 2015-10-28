@@ -36,8 +36,9 @@ Using Brainbay
  Brainbay now has to be configured to work for our data format and that can be achieved by the using the configuration file   https://github.com/Protocentral/AFE4400_Oximeter/tree/master/Brainbay_setup_and_configfiles 
  In Brainbay, use Design>Load Design to load the configuration file that you downloaded in the previous link.
  Right click the EEG block in brainbay, and select the right COM port and baud rate 57600, press connect and then press play  (F7). In Brainbay, now the following are displayed
+
 [![Oximeter](https://www.protocentral.com/img/cms/ads1292r_shield/afe4400brainbayy.png)  
-*AFE4400 Pulse Oximeter Shield Kit for Arduino (PC-41234)*](https://www.protocentral.com/biomedical/861-afe4400-pulse-oximeter-shield-kit-for-arduino-642078949425.html)
+]
  
 
 License Information
