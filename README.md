@@ -30,12 +30,12 @@ Repository Contents
  
 Using Brainbay
 ----------------
- Brainbay is an open-source application originally desgined for bio-feedback applications, it can be easily used for          visualizing the ECG in real-time. Brainbay can be downloaded from the following link:
+ Brainbay is an open-source application originally designed for bio-feedback applications, it can be easily used for          visualizing the ECG in real-time. Brainbay can be downloaded from the following link:
  https://github.com/Protocentral/AFE4400_Oximeter/tree/master/Brainbay_setup_and_configfiles
  You can use the Windows installer and follow the instructions on the screen to install Brainbay on your computer
  Brainbay now has to be configured to work for our data format and that can be achieved by the using the configuration file   https://github.com/Protocentral/AFE4400_Oximeter/tree/master/Brainbay_setup_and_configfiles 
  In Brainbay, use Design>Load Design to load the configuration file that you downloaded in the previous link.
- Right click the EEG block in brainbay, and select the right COM port and baud rate 57600, press connect and then press play  (F7). In Brainbay, now the following are displayed
+ Right click the EEG block in brainbay, and select the right COM port and baudrate 9600, press connect and then press play  (F7). In Brainbay, now the following are displayed
 
 ![Oximeter](https://www.protocentral.com/img/cms/ads1292r_shield/afe4400brainbayy.png)  
 
