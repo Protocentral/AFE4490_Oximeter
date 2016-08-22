@@ -86,7 +86,7 @@ Using Processing - Data Visualization Software (New!)
 
  a. If Processing IDE was open, close it and reopen to refresh the libraries and sketches. The repositories are not refreshed if the IDE was open while the Sketches and Libraries were being updated.
 
- b. Double-click any of the .pde files in the ces_view_spo2 directory to open all of the pulse oximeter code in the Processing IDE.
+ b. Double-click any of the .pde files in the ces_view_oximeter directory to open all of the pulse oximeter code in the Processing IDE.
 
  c. If everything done so far was good, clicking the "run" button on the top left corner of the IDE, should run the code! If it does not, make sure you installed your libraries correctly.
 
