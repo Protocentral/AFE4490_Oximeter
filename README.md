@@ -30,7 +30,7 @@ Repository Contents
  
 Using Brainbay
 ----------------
- Brainbay is an open-source application originally designed for bio-feedback applications, it can be easily used for          visualizing the ECG in real-time. Brainbay can be downloaded from the following link:
+ Brainbay is an open-source application originally designed for bio-feedback applications, it can be easily used for visualizing the ECG in real-time. Brainbay can be downloaded from the following link:
  https://github.com/Protocentral/AFE4490_Oximeter/tree/master/Brainbay_setup_and_configfiles
  You can use the Windows installer and follow the instructions on the screen to install Brainbay on your computer
  Brainbay now has to be configured to work for our data format and that can be achieved by the using the configuration file   https://github.com/Protocentral/AFE4490_Oximeter/tree/master/Brainbay_setup_and_configfiles 
@@ -76,13 +76,19 @@ Using Processing - Data Visualization Software (New!)
 
 **Note:** This directory appears as "Processing" on Windows/Mac, and goes by the name "Sketchbook" on Linux. Create a subdirectory by name "libraries" if one doesn't exist already.
 
- d. From the above mentioned "AFE4490_Oximeter-master" directory Copy/Move the contents of the AFE4400_Oximeter-master/Processing/ces_view_oximeter folder to the Processing sketchbook directory which is also mentioned above (Locate the Processing sketchbook)
+ d. From the above mentioned "AFE4490_Oximeter-master" directory Copy/Move the contents of the AFE4490_Oximeter-master/Processing/ces_view_oximeter folder to the Processing sketchbook directory which is also mentioned above (Locate the Processing sketchbook)
 
  e. Finally, copy the G4P directories from AFE4490_Oximeter-master\Processing\libraries and paste them into the libraries directory of your Processing sketchbook.
 
  f. You are all set now to get your first PPG wave form and SpO2 reading visualized from the AFE4400 Oximeter Shield!
 
-### 3. Open Processing & launch the ces_view_oximeter
+### 3. Uploading Arduino Sketch For AFE4490 Oximeter Shield
+
+ a. Open the Arduino IDE to load the embedded code for AFE4490 Oximeter Shield.
+
+ b. Click on File -> Open and Browse the .ino code for Arduino from AFE4490_Oximeter-master\Libraries\Processing_sketch\IR_RED and export the application to Arduino.
+
+### 4. Open Processing & launch the ces_view_oximeter
 
  a. If Processing IDE was open, close it and reopen to refresh the libraries and sketches. The repositories are not refreshed if the IDE was open while the Sketches and Libraries were being updated.
 
