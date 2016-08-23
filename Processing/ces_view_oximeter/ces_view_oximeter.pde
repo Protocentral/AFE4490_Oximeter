@@ -261,9 +261,8 @@ void ecsProcessData(char rxch)
       {     
         int data1 = ecsParsePacket(DataRcvPacket1, DataRcvPacket1.length-1);
         int data2 = ecsParsePacket(DataRcvPacket2, DataRcvPacket2.length-1);
-        receivedVoltage_RED = data1 ;
-        receivedVoltage_IR = data2 ;
-
+        receivedVoltage_RED = data1*0.0000057220458984375 ;
+        receivedVoltage_IR = data2*0.0000057220458984375 ;
 
         time = time+0.1;
         xdata[arrayIndex] = time;
@@ -288,9 +287,9 @@ void ecsProcessData(char rxch)
 
           //  Emprical Formals
 
-          float SpO2 = 10.0002*(value)-52.887*(value) + 26.817*(value) + 98.293;
+          //float SpO2 = 10.0002*(value)-52.887*(value) + 26.817*(value) + 98.293;
           //  float SpO2 =((0.81-0.18*(value))/(0.73+0.11*(value)));
-          //float SpO2=110-25*(value);
+          float SpO2=110-25*(value);
           SpO2 = (int)(SpO2 * 100);
           SpO2 = SpO2/100;
           oxygenSaturation.setText(SpO2+"");
