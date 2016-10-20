@@ -1,4 +1,4 @@
-AF4900 Oximeter SHIELD 
+AF4490 Oximeter SHIELD 
 ================================
 
 [![Oximeter](https://www.protocentral.com/3130-tm_thickbox_default/afe4400-pulse-oximeter-shield-kit-for-arduino.jpg)  
