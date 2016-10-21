@@ -4,7 +4,7 @@
 //
 //   Created: Balasundari, Aug 2016
 //
-//   Requires g4p_control graphing library for processing.  Built on V4.1
+//   Requires g4p_control graphing library for processing.  Built on V4.0
 //   Downloaded from Processing IDE Sketch->Import Library->Add Library->G4P Install
 //
 /////////////////////////////////////////////////////////////////////////////////////////

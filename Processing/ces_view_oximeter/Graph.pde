@@ -56,7 +56,7 @@ class Graph
     textSize(14);
     text("Time (seconds)  -  "+Title, xPos+Width/2, yPos+Height+30);                     // x-axis Label 
     rotate(-PI/2);                                                                          // rotate -90 degrees
-    text("Force (Newtons)", -yPos-Height/2, xPos-40);                                 // y-axis Label  
+    text("Voltage (V)", -yPos-Height/2, xPos-40);                                 // y-axis Label  
     rotate(PI/2);                                                                           // rotate back
     strokeWeight(1);
     stroke(255);
