@@ -1,7 +1,7 @@
 AF4490 Oximeter SHIELD 
 ================================
 
-[![Oximeter](https://www.protocentral.com/3130-tm_thickbox_default/afe4400-pulse-oximeter-shield-kit-for-arduino.jpg)  
+[![Oximeter](https://www.protocentral.com/3782-thickbox_default/afe4490-pulse-oximeter-shield-kit-for-arduino.jpg)  
 *AFE4490 Pulse Oximeter Shield Kit for Arduino (PC-41234)*](https://www.protocentral.com/biomedical/996-afe4490-pulse-oximeter-shield-kit-for-arduino-642078949425.html)
 
 This pulse oximetry shield from ProtoCentral uses the AFE4490 IC to enble your Arduino to measure heart rate as well as SpO2 values.
@@ -28,22 +28,6 @@ Repository Contents
 * **/extras** - includes the datasheet
 * **/Brainbay** - setup  and configuration file
  
-Using Brainbay
-----------------
- Brainbay is an open-source application originally designed for bio-feedback applications, it can be easily used for visualizing the ECG in real-time. Brainbay can be downloaded from the following link:
- https://github.com/Protocentral/AFE4490_Oximeter/tree/master/Brainbay_setup_and_configfiles
- You can use the Windows installer and follow the instructions on the screen to install Brainbay on your computer
- Brainbay now has to be configured to work for our data format and that can be achieved by the using the configuration file   https://github.com/Protocentral/AFE4490_Oximeter/tree/master/Brainbay_setup_and_configfiles 
- In Brainbay, use Design>Load Design to load the configuration file that you downloaded in the previous link.
- Right click the EEG block in brainbay, and select the right COM port and baudrate 57600, press connect and then press play  (F7). In Brainbay, now the following are displayed
-
-![Oximeter](https://www.protocentral.com/img/cms/ads1292r_shield/afe4400brainbayy.png)  
-
- 
-Oxygen Saturation level displayed in the Serial Terminal
-
-![OximeterSerialOutput](https://www.protocentral.com/img/cms/ads1292r_shield/oximeter_serial_1.png)
-
 Using Processing - Data Visualization Software (New!)
 -----------------------------------------------------
  Processing is a data visualization software, in existence since 2001, used by artists and scientists alike. It’s an open source coding framework based on Java. If you are familiar with the Arduino environment, the Processing IDE is similar and you won’t have much of a learning curve to climb!
@@ -54,11 +38,7 @@ Using Processing - Data Visualization Software (New!)
 
  Download the processing ide latest version from the link
 
-* [MAC] (http://download.processing.org/processing-3.2.1-macosx.zip)
-* [Linux 32-bit] (http://download.processing.org/processing-3.2.1-linux32.tgz)
-* [Linux 64-bit] (http://download.processing.org/processing-3.2.1-linux64.tgz)
-* [Windows 32-bit] (http://download.processing.org/processing-3.2.1-windows32.zip)
-* [Windows 64-bit] (http://download.processing.org/processing-3.2.1-windows64.zip)
+* [MAC] (http://download.processing.org/)
 
  Once downloaded, unzip the archive and install the app as per your OS.
 
