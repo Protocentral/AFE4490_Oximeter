@@ -24,8 +24,7 @@ Repository Contents
 -------------------
 * **/Libraries** - Arduino library and example sketches.
 * **/Hardware** - All Eagle design files (.brd, .sch)
-* **/extras** - includes the datasheet
-* **/Brainbay** - setup  and configuration file
+* **/extras** - datasheets and extras
  
 Using Processing - Data Visualization Software (New!)
 -----------------------------------------------------
