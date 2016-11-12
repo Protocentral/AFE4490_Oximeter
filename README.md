@@ -1,6 +1,5 @@
 AF4490 Oximeter SHIELD 
 ================================
-
 [![Oximeter](https://www.protocentral.com/3782-thickbox_default/afe4490-pulse-oximeter-shield-kit-for-arduino.jpg)  
 *AFE4490 Pulse Oximeter Shield Kit for Arduino (PC-41234)*](https://www.protocentral.com/biomedical/996-afe4490-pulse-oximeter-shield-kit-for-arduino-642078949425.html)
 
@@ -38,9 +37,9 @@ Using Processing - Data Visualization Software (New!)
 
  Download the processing ide latest version from the link
 
-* [MAC] (http://download.processing.org/)
+* [Download Processing for your OS] (http://download.processing.org/)
 
- Once downloaded, unzip the archive and install the app as per your OS.
+Once downloaded, unzip the archive and install the app as per your OS.
 
 ### 2. Download the Processing code for Pulse Oximeter visualization
 
