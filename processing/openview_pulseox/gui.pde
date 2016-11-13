@@ -41,21 +41,25 @@ public void createGUI(){
   G4P.messagesEnabled(false);
   G4P.setGlobalColorScheme(GCScheme.BLUE_SCHEME);
   G4P.setCursor(ARROW);
-  surface.setTitle("Pulse_Oximeter");
+  surface.setTitle("ProtoCentral OpenView for PulseOx");
+  
   portList = new GDropList(this, 10, 10, 150, 495, 10);
   portList.setItems(loadStrings("list_626048"), 0);
   portList.setLocalColorScheme(GCScheme.GREEN_SCHEME);
   portList.addEventHandler(this, "port_click");
+  
   close = new GButton(this, 340, 10, 100, 45);
   close.setText("CLOSE");
   close.setTextBold();
   close.setLocalColorScheme(GCScheme.GREEN_SCHEME);
   close.addEventHandler(this, "close_click");
+  
   start = new GButton(this, 200, 10, 100, 45);
   start.setText("START");
   start.setTextBold();
   start.setLocalColorScheme(GCScheme.GREEN_SCHEME);
   start.addEventHandler(this, "start_click");
+  
   oxygenSaturation = new GLabel(this, 600, 100, 300, 70);
   oxygenSaturation.setText("0");
   oxygenSaturation.setTextBold();

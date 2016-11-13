@@ -229,7 +229,7 @@ void AFE4490Init (void)
      AFE4490Write(TIAGAIN,0x000000); // CF = 5pF, RF = 500kR
      AFE4490Write(TIA_AMB_GAIN,0x000001); 
      
-     AFE4490Write(LEDCNTRL,0x000707);    
+     AFE4490Write(LEDCNTRL,0x001414);    
      AFE4490Write(CONTROL2,0x000000); // LED_RANGE=100mA, LED=50mA 
      AFE4490Write(CONTROL1,0x010707); // Timers ON, average 3 samples  
     
