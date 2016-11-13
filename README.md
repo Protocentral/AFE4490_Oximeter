@@ -1,4 +1,4 @@
-AF4490 Oximeter SHIELD 
+ProtoCentral AF4490-based Pulse-oximeter shield for Arduino
 ================================
 [![Oximeter](https://www.protocentral.com/3782-thickbox_default/afe4490-pulse-oximeter-shield-kit-for-arduino.jpg)  
 *AFE4490 Pulse Oximeter Shield Kit for Arduino (PC-41234)*](https://www.protocentral.com/biomedical/996-afe4490-pulse-oximeter-shield-kit-for-arduino-642078949425.html)
