@@ -22,9 +22,10 @@ Includes:
 
 Repository Contents
 -------------------
-* **/Libraries** - Arduino library and example sketches.
-* **/Hardware** - All Eagle design files (.brd, .sch)
+* **/arduino** - Arduino library and example sketch
+* **/hardware** - All Eagle design files (.brd, .sch)
 * **/extras** - datasheets and extras
+* **/processing** - Processing-based Application
  
 Using Processing - Data Visualization Software (New!)
 -----------------------------------------------------
@@ -32,7 +33,7 @@ Using Processing - Data Visualization Software (New!)
  
  The following are the steps to run the code:
 
-### 1. Download Processing for your operating system
+### 1. Download and Install Processing 
 
  Download the processing ide latest version from the link
 
@@ -54,7 +55,7 @@ Once downloaded, unzip the archive and install the app as per your OS.
 
 **Note:** This directory appears as "Processing" on Windows/Mac, and goes by the name "Sketchbook" on Linux. Create a subdirectory by name "libraries" if one doesn't exist already.
 
- d. From the above mentioned "AFE4490_Oximeter-master" directory Copy/Move the contents of the AFE4490_Oximeter-master/Processing/ces_view_oximeter folder to the Processing sketchbook directory which is also mentioned above (Locate the Processing sketchbook)
+ d. From the above mentioned "AFE4490_Oximeter-master" directory Copy/Move the contents of the AFE4490_Oximeter-master/processing/openview_pulseox folder to the Processing sketchbook directory which is also mentioned above (Locate the Processing sketchbook)
 
  e. Finally, copy the G4P directories from AFE4490_Oximeter-master\Processing\libraries and paste them into the libraries directory of your Processing sketchbook.
 
@@ -64,13 +65,13 @@ Once downloaded, unzip the archive and install the app as per your OS.
 
  a. Open the Arduino IDE to load the embedded code for AFE4490 Oximeter Shield.
 
- b. Click on File -> Open and Browse the .ino code for Arduino from AFE4490_Oximeter-master\Libraries\Processing_sketch\IR_RED and export the application to Arduino.
+ b. Click on File -> Open and Browse the .ino code for Arduino from AFE4490_Oximeter-master\arduino and export the application to Arduino.
 
 ### 4. Open Processing & launch the ces_view_oximeter
 
  a. If Processing IDE was open, close it and reopen to refresh the libraries and sketches. The repositories are not refreshed if the IDE was open while the Sketches and Libraries were being updated.
 
- b. Double-click any of the .pde files in the ces_view_oximeter directory to open all of the pulse oximeter code in the Processing IDE.
+ b. Double-click any of the .pde files in the openview_pulseox directory to open all of the pulse oximeter code in the Processing IDE.
 
  c. If everything done so far was good, clicking the "run" button on the top left corner of the IDE, should run the code! If it does not, make sure you installed your libraries correctly.
 
