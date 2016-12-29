@@ -281,9 +281,9 @@ void AFE4490Write (uint8_t address, uint32_t data)
     digitalWrite (SPISTE, HIGH); // disable device
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-uint32_t AFE4490Read (uint8_t address)
+unsigned long AFE4490Read (uint8_t address)
 {       
-    uint32_t data=0;
+    unsigned long data=0;
     digitalWrite (SPISTE, LOW); // enable device
     SPI.transfer (address); // send address to device
     //SPI.transfer (data);
