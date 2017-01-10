@@ -287,12 +287,11 @@ unsigned long AFE4490Read (uint8_t address)
     digitalWrite (SPISTE, LOW); // enable device
     SPI.transfer (address); // send address to device
     //SPI.transfer (data);
-    data |= (SPI.transfer (0)<<16); // read top 8 bits data
-    data |= (SPI.transfer (0)<<8); // read middle 8 bits  data
+    data |= ((unsigned long)SPI.transfer (0)<<16); // read top 8 bits data
+    data |= ((unsigned long)SPI.transfer (0)<<8); // read middle 8 bits  data
     data |= SPI.transfer (0); // read bottom 8 bits data
     digitalWrite (SPISTE, HIGH); // disable device
     
 
     return data; // return with 24 bits of read data
 }
-
