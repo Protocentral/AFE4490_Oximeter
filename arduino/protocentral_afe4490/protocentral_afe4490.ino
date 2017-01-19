@@ -52,10 +52,12 @@
 #define LED2ABSVAL    0x2e
 #define LED1ABSVAL    0x2f
 #define DIAG      0x30
-
-
-#define BPM_WINDOW 300
 #define count 60
+
+#define CES_CMDIF_PKT_START_1   0x0A
+#define CES_CMDIF_PKT_START_2   0xFA
+#define CES_CMDIF_TYPE_DATA   0x02
+#define CES_CMDIF_PKT_STOP    0x0B
 int IRheartsignal[count];
 int Redheartsignal[count];
 int IRdc[count];
@@ -73,12 +75,7 @@ const int SOMI = 12;
 const int SIMO = 11; 
 const int SCLK  = 13;
 const int SPISTE = 7; 
-const int SPIDRDY = 6;
-
-const int AFERESET = 5;
-
-int pin = 3;
-int pin2 = 4;
+const int SPIDRDY = 2;
 volatile int state = LOW;
 
 
@@ -87,11 +84,6 @@ void AFE4490Write (uint8_t address, uint32_t data);
 uint32_t AFE4490Read (uint8_t address);
 signed long average_BPM( signed long );
 //--------------------------------------------------------------------------------------------------------------------
-
-#define CES_CMDIF_PKT_START_1   0x0A
-#define CES_CMDIF_PKT_START_2   0xFA
-#define CES_CMDIF_TYPE_DATA   0x02
-#define CES_CMDIF_PKT_STOP    0x0B
 
 volatile char DataPacketHeader[16];
 volatile char DataPacketFooter[2];
@@ -112,21 +104,21 @@ volatile int i;
 
 void setup()
 {
+   delay(2000) ;   // pause for a moment
    Serial.begin(57600);
-    
+   
    SPI.begin(); 
-   pinMode (SOMI,INPUT);
-   pinMode (SPISTE,OUTPUT);
-   pinMode (SCLK, OUTPUT);
-   pinMode (SIMO, OUTPUT);
-   pinMode (SPIDRDY,INPUT);
-   
-   pinMode(2, INPUT);
-   pinMode(3, OUTPUT);
+   // set the directions
+   pinMode (SOMI,INPUT);   //master-in
+   pinMode (SPISTE,OUTPUT);//Slave Select
+   pinMode (SCLK, OUTPUT); // master clock
+   pinMode (SIMO, OUTPUT); // master-in
+   pinMode (SPIDRDY,INPUT);// data ready 
+ 
+   attachInterrupt(0, blink, RISING ); // Digital2 is interrupt0 in ARduino
 
-   attachInterrupt(0, blink, RISING );
-   
-   SPI.setClockDivider (SPI_CLOCK_DIV8);
+   // set SPI transmission
+   SPI.setClockDivider (SPI_CLOCK_DIV8); // set Speed as 2MHz , 16MHz/ClockDiv
    SPI.setDataMode (SPI_MODE0);
    SPI.setBitOrder (MSBFIRST);
    
@@ -147,18 +139,14 @@ void setup()
 
 void loop()
 {    
-     if (state == HIGH)
+     if (state == HIGH)   //   
      {
-                        //noInterrupts();
+        //noInterrupts();
         detachInterrupt(0);
-        digitalWrite(3, 1);        //test pin 3
-        digitalWrite(3, 0); 
         AFE4490Write(CONTROL0,0x000001);  
         IRtemp = AFE4490Read(LED1VAL);
         AFE4490Write(CONTROL0,0x000001);  
         REDtemp = AFE4490Read(LED2VAL);   
-     //   REDtemp = fir.process(REDtemp);   // Filter 
-     //   IRtemp = fir.process( IRtemp);    // 
         Responsebyte = true;
 
      }  
@@ -173,46 +161,46 @@ void loop()
       IRtemp = (unsigned long) (IRtemp<<10);
       seegtemp = (signed long) (IRtemp);
       seegtemp = (signed long) (seegtemp>>10);  
-//     seegtemp = seegtemp*100;
-                        
+                      
       REDtemp = (unsigned long) (REDtemp<<10);
       seegtemp2 = (signed long) (REDtemp);
       seegtemp2 = (signed long) (seegtemp2>>10);
-
-    DataPacketHeader[0] = 0x0A;
-    DataPacketHeader[1] = 0xFA;
-    DataPacketHeader[2] = 0x08;
-    DataPacketHeader[3] = 0;
-    DataPacketHeader[4] = 0x02;
+  
+      DataPacketHeader[0] = 0x0A;
+      DataPacketHeader[1] = 0xFA;
+      DataPacketHeader[2] = 0x08;
+      DataPacketHeader[3] = 0;
+      DataPacketHeader[4] = 0x02;
     
 
-    DataPacketHeader[5] = seegtemp;
-    DataPacketHeader[6] = seegtemp>>8;
-    DataPacketHeader[7] = seegtemp>>16;
-    DataPacketHeader[8] = seegtemp>>24; 
- 
-    DataPacketHeader[9] = seegtemp2;
-    DataPacketHeader[10] = seegtemp2>>8;
-    DataPacketHeader[11] = seegtemp2>>16;
-    DataPacketHeader[12] = seegtemp2>>24; 
-
-    DataPacketHeader[13] = 0x00;
-    DataPacketHeader[14] = 0x0b;
-
-    for(i=0; i<15; i++) // transmit the data
-    {
-        Serial.write(DataPacketHeader[i]);
-
-     }                 Responsebyte = false;
-                
-                 state = LOW;
-                       attachInterrupt(0, blink, RISING );      
+      DataPacketHeader[5] = seegtemp;
+      DataPacketHeader[6] = seegtemp>>8;
+      DataPacketHeader[7] = seegtemp>>16;
+      DataPacketHeader[8] = seegtemp>>24; 
+   
+      DataPacketHeader[9] = seegtemp2;
+      DataPacketHeader[10] = seegtemp2>>8;
+      DataPacketHeader[11] = seegtemp2>>16;
+      DataPacketHeader[12] = seegtemp2>>24; 
+  
+      DataPacketHeader[13] = 0x00;
+      DataPacketHeader[14] = 0x0b;
+  
+      for(i=0; i<15; i++) // transmit the data
+      {
+          Serial.write(DataPacketHeader[i]);
+  
+       }
+       Responsebyte = false;
+       state = LOW;
+       attachInterrupt(0, blink, RISING );      
+     
   }
   }                   
         
 }
 
-
+// Gets Fired on DRDY event
 void blink()
 {
   state = HIGH;
