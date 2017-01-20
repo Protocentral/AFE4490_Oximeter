@@ -94,7 +94,7 @@ volatile byte SPI_RX_Buff[150] ;
 volatile static int SPI_RX_Buff_Count = 0;
 volatile char *SPI_RX_Buff_Ptr;
 volatile int Responsebyte = false;
-volatile unsigned int pckt =0 , buff=0,t=0 , j1=0,j2=0;
+volatile unsigned int pckt =0, buff=0,t=0;
 volatile unsigned long int EEG_Ch1_Data[150],EEG_Ch2_Data[150];
 volatile unsigned char datac[150];
 unsigned long ueegtemp = 0, ueegtemp2 = 0, Pkt_Counter=0;
@@ -110,7 +110,7 @@ void setup()
    SPI.begin(); 
    // set the directions
    pinMode (SOMI,INPUT);   //master-in
-   pinMode (SPISTE,OUTPUT);//Slave Select
+   pinMode (SPISTE,OUTPUT);//Slave Selectj
    pinMode (SCLK, OUTPUT); // master clock
    pinMode (SIMO, OUTPUT); // master-in
    pinMode (SPIDRDY,INPUT);// data ready 
@@ -268,6 +268,7 @@ void AFE4490Write (uint8_t address, uint32_t data)
     SPI.transfer (data & 0xFF); // write bottom 8 bits    
     digitalWrite (SPISTE, HIGH); // disable device
 }
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 unsigned long AFE4490Read (uint8_t address)
 {       
