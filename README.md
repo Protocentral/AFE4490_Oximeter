@@ -26,7 +26,31 @@ Repository Contents
 * **/hardware** - All Eagle design files (.brd, .sch)
 * **/extras** - datasheets and extras
 * **/processing** - Processing-based Application
+
+Connecting the shield to your Arduino
+-------------------------------------
+ Connect the ECG/Respiration shield to the Arduino by stacking it on top of your Arduino. This shield uses the SPI interface  to communicate with the Arduino. Since this includes the ICSP header, which is used on newer Arduinos for SPI communication,  this shield is also compatible newer Arduino boards such as the Arduino Yun and Due.
+
+
+Wiring the Breakout to your Arduino
+------------------------------------
+ If you have bought the breakout the connection with the Arduino board is as follows:
  
+|AFE4490 pin label| Arduino Connection   |Pin Function                  |
+|----------------- |:--------------------:|-----------------:           |
+| GND              | Gnd                  |  Gnd                        |             
+| DRDY             | D2                   |  Data ready(intterupt)      |
+| MISO             | D12                  |  Slave out                  |
+| SCK              | D13                  |  SPI clock                  |
+| MOSI             | D11                  |  Slave in                   |
+| CS0              | D7                   |  Slave select               |
+| START            | NC                   |  Conversion start Pin       |
+| PWDN             | NC                   |  Power Down/ Reset          |
+| DIAG_END         | NC                   |  Diagnostic output          |
+| LED_ALM          | NC                   |  Cable fault indicator      |
+| PD_ALM           | NC                   |  PD sensor fault indicator  |
+| VCC              | +5v                  |  Supply voltage             |
+
 Using Processing - Data Visualization Software (New!)
 -----------------------------------------------------
  Processing is a data visualization software, in existence since 2001, used by artists and scientists alike. It’s an open source coding framework based on Java. If you are familiar with the Arduino environment, the Processing IDE is similar and you won’t have much of a learning curve to climb!
