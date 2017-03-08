@@ -39,7 +39,7 @@ Wiring the Breakout to your Arduino
 |AFE4490 pin label| Arduino Connection   |Pin Function                  |
 |----------------- |:--------------------:|-----------------:           |
 | GND              | Gnd                  |  Gnd                        |             
-| DRDY             | D2                   |  Data ready(intterupt)      |
+| DRDY             | D2                   |  Data ready(interrupt)      |
 | MISO             | D12                  |  Slave out                  |
 | SCK              | D13                  |  SPI clock                  |
 | MOSI             | D11                  |  Slave in                   |
