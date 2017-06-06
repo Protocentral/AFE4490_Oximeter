@@ -11,7 +11,7 @@ public class SPO2_cal
   {
     SPO2 = 0;
     int k = 0;
-    for(int i = 50; i < spo2_array.length; i++)
+    for(int i = 0; i < spo2_array.length; i++)
     {
      // float roundoff = Math.round((spo2_array[i] * spo2_array[i])*100)/100;
       spo2_cal_array[k++] = spo2_array[i] * spo2_array[i];
