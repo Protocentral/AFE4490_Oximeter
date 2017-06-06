@@ -150,9 +150,9 @@ public void setup() {
   }
   time = 0;
   g.GraphColor = color(0, 255, 0);
-  g.Title = "RED";
+  g.Title = "IR";
   g1.GraphColor = color( 0, 255, 0);
-  g1.Title = "IR";
+  g1.Title = "RED";
 //  myFilter = new SignalFilter(this);
 }
 
@@ -263,33 +263,33 @@ void ecsProcessData(char rxch)
       {     
         int data1 = ecsParsePacket(DataRcvPacket1, DataRcvPacket1.length-1);
         int data2 = ecsParsePacket(DataRcvPacket2, DataRcvPacket2.length-1);
-        receivedVoltage_RED = data1 * (0.00000057220458984375) ;
-        receivedVoltage_IR = data2 * (0.00000057220458984375) ;
+        receivedVoltage_IR = data1 * (0.00000057220458984375) ;
+        receivedVoltage_RED = data2 * (0.00000057220458984375) ;
 
         time = time+0.1;
         xdata[arrayIndex] = time;
         
-        //receivedVoltage_RED = myFilter.filterUnitFloat((float)receivedVoltage_RED);
         //receivedVoltage_IR = myFilter.filterUnitFloat((float)receivedVoltage_IR);
+        //receivedVoltage_RED = myFilter.filterUnitFloat((float)receivedVoltage_RED);
         
         
-        AvgYdata[arrayIndex] = (float)receivedVoltage_RED;
-        AvgZdata[arrayIndex] = (float)receivedVoltage_IR;
+        AvgYdata[arrayIndex] = (float)receivedVoltage_IR;
+        AvgZdata[arrayIndex] = (float)receivedVoltage_RED;
         value1 = (float)( AvgYdata[arrayIndex] - averageValue(AvgYdata));
         value2 = (float)( AvgZdata[arrayIndex] - averageValue(AvgZdata));
         ydata[arrayIndex] = value1;
         zdata[arrayIndex] = value2;
 
-        float RedDC = (float) averageValue(AvgYdata);
-        float IrDC = (float) averageValue(AvgZdata);
+        float IrDC = (float) averageValue(AvgYdata);
+        float RedDC = (float) averageValue(AvgZdata);
 
         arrayIndex++;
         if (arrayIndex == pSize)
         {  
           arrayIndex = 0;
           time = 0;
-          RedAC = s.SPO2_Value(ydata);
-          IrAC = s.SPO2_Value(zdata);
+          IrAC = s.SPO2_Value(ydata);
+          RedAC = s.SPO2_Value(zdata);
           float value = (RedAC/abs(RedDC))/(IrAC/abs(IrDC));
 
           /********  Emprical Formalae  *********/
