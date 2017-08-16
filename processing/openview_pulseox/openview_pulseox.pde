@@ -264,7 +264,7 @@ void ecsProcessData(char rxch)
         CES_Pkt_Len = (int) ((rxch<<8)|CES_Pkt_Len);
    
       else if (CES_Pkt_Pos_Counter==CES_CMDIF_IND_PKTTYPE)
-           println((int)CES_Pkt_Len);
+        
         CES_Pkt_PktType = (int) rxch;
     } else if ( (CES_Pkt_Pos_Counter >= CES_CMDIF_PKT_OVERHEAD) && (CES_Pkt_Pos_Counter < CES_CMDIF_PKT_OVERHEAD+CES_Pkt_Len+1) )  //Read Data
     {
@@ -313,9 +313,8 @@ void ecsProcessData(char rxch)
             AvgYdata[arrayIndex] = (float)receivedVoltage_RED;
             AvgZdata[arrayIndex] = (float)receivedVoltage_IR;
             value1 = (float)( AvgYdata[arrayIndex] - averageValue(AvgYdata));
-            value1 *=-1 ;
+           
             value2 = (float)( AvgZdata[arrayIndex] - averageValue(AvgZdata));
-            value2 *= -1 ;
             ydata[arrayIndex] = value1;
             zdata[arrayIndex] = value2;
     
