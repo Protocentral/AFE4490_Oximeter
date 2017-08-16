@@ -107,7 +107,7 @@ Once downloaded, unzip the archive and install the app as per your OS.
 
  f. You should see the PPG ( RED and IR) waves generated with the values obtained from the AFE4490 Oximeter Shield Breakout Board as shown below.
 
-![PPG Wave Form in Processing](/Processing/Final Output/output.png)
+![PPG Wave Form in Processing](/Processing/Final Output/output.gif)
 
 License Information
 ===================
