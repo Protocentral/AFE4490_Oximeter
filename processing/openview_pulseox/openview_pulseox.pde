@@ -1,6 +1,7 @@
 // Need G4P library
 import processing.serial.*;
 import g4p_controls.*;
+import grafica.*;
 import java.awt.*;
 import javax.swing.JFileChooser;
 
@@ -59,7 +60,7 @@ int ecs_rx_state = 0;
 int CES_Pkt_Len;
 int CES_Pkt_Pos_Counter, CES_Pkt_Data_Counter1, CES_Pkt_Data_Counter2;
 int CES_Pkt_PktType;
-char DataRcvPacket1[] = new char[1000];
+char DataRcvPacket[] = new char[1000];
 char DataRcvPacket2[] = new char[1000];
 
 /************** ControlP5 Related Variables **********************/
@@ -68,7 +69,7 @@ int colorValue;
 HelpWidget helpWidget;
 HeaderButton headerButton;
 MessageBox msgBox;
-SPO2_cal s;
+
 boolean visibility=false;
 
 /************** Graph Related Variables **********************/
@@ -109,6 +110,9 @@ boolean startPlot, Serialevent = false;
 String msgs;
 int startTime = 0;
 
+char  CES_Pkt_IR_data[] = new char[4];  
+char  CES_Pkt_RED_data[] = new char[4];
+
 int pSize = 2000;
 float[] xdata = new float[pSize];
 float[] ydata = new float[pSize];
@@ -122,6 +126,14 @@ BigDecimal avg, rms, a;
 double additionFactor_red, additionFactor_ir;
 float value1, value2;
 float RedAC = 0, RedDC = 0, IrAC = 0, IrDC = 0;
+int count;
+
+import controlP5.*;
+//import http.requests.*;
+
+ControlP5 cp5;
+//
+Textlabel lblSpO2;
 //SignalFilter myFilter;
 
 public void setup() {
@@ -137,7 +149,7 @@ public void setup() {
   headerButton = new HeaderButton(0, 0, width, 60);
   helpWidget = new HelpWidget(0, height - 30, width, 40); 
   msgBox = new MessageBox();
-  s = new SPO2_cal();
+
   g = new Graph(100, 100, width-120, 200);
   g1 = new Graph(100, 350, width-120, 200);
   setChartSettings();
@@ -153,6 +165,14 @@ public void setup() {
   g.Title = "RED";
   g1.GraphColor = color( 0, 255, 0);
   g1.Title = "IR";
+  
+  cp5 = new ControlP5(this);
+
+  lblSpO2 = cp5.addTextlabel("lblSpO2")
+    .setText("SpO2: --- %")
+    .setPosition(width-350,80)
+    .setColorValue(color(255,255,255))
+    .setFont(createFont("Impact",40)); 
 //  myFilter = new SignalFilter(this);
 }
 
@@ -233,6 +253,7 @@ void ecsProcessData(char rxch)
     CES_Pkt_Pos_Counter = CES_CMDIF_IND_LEN;
     CES_Pkt_Data_Counter1 = 0;
     CES_Pkt_Data_Counter2 = 0;
+    
     break;
 
   case CESState_PktLen_Found:
@@ -241,79 +262,85 @@ void ecsProcessData(char rxch)
     {
       if (CES_Pkt_Pos_Counter==CES_CMDIF_IND_LEN_MSB)
         CES_Pkt_Len = (int) ((rxch<<8)|CES_Pkt_Len);
+   
       else if (CES_Pkt_Pos_Counter==CES_CMDIF_IND_PKTTYPE)
+           println((int)CES_Pkt_Len);
         CES_Pkt_PktType = (int) rxch;
     } else if ( (CES_Pkt_Pos_Counter >= CES_CMDIF_PKT_OVERHEAD) && (CES_Pkt_Pos_Counter < CES_CMDIF_PKT_OVERHEAD+CES_Pkt_Len+1) )  //Read Data
     {
       if (CES_Pkt_PktType == 2)
       {
-        if (CES_Pkt_Data_Counter1 < 4)                           
-        {
-          DataRcvPacket1[CES_Pkt_Data_Counter1]= (char) (rxch);
+          DataRcvPacket[CES_Pkt_Data_Counter1]= (char) (rxch);
           CES_Pkt_Data_Counter1++;
-        } else
-        {
-          DataRcvPacket2[CES_Pkt_Data_Counter2]= (char) (rxch);
-          CES_Pkt_Data_Counter2++;
-        }
-      }
-    } else  //All header and data received
+     }
+    }
+    else  //All header and data received
     {
       if (rxch==CES_CMDIF_PKT_STOP)
-      {     
-        int data1 = ecsParsePacket(DataRcvPacket1, DataRcvPacket1.length-1);
-        int data2 = ecsParsePacket(DataRcvPacket2, DataRcvPacket2.length-1);
-        receivedVoltage_RED = data1 * (0.00000057220458984375) ;
-        receivedVoltage_IR = data2 * (0.00000057220458984375) ;
-
-        time = time+0.1;
-        xdata[arrayIndex] = time;
-        
-        //receivedVoltage_RED = myFilter.filterUnitFloat((float)receivedVoltage_RED);
-        //receivedVoltage_IR = myFilter.filterUnitFloat((float)receivedVoltage_IR);
-        
-        
-        AvgYdata[arrayIndex] = (float)receivedVoltage_RED;
-        AvgZdata[arrayIndex] = (float)receivedVoltage_IR;
-        value1 = (float)( AvgYdata[arrayIndex] - averageValue(AvgYdata));
-        value2 = (float)( AvgZdata[arrayIndex] - averageValue(AvgZdata));
-        ydata[arrayIndex] = value1;
-        zdata[arrayIndex] = value2;
-
-        float RedDC = (float) averageValue(AvgYdata);
-        float IrDC = (float) averageValue(AvgZdata);
-
-        arrayIndex++;
-        if (arrayIndex == pSize)
-        {  
-          arrayIndex = 0;
-          time = 0;
-          RedAC = s.SPO2_Value(ydata);
-          IrAC = s.SPO2_Value(zdata);
-          float value = (RedAC/abs(RedDC))/(IrAC/abs(IrDC));
-
-          /********  Emprical Formalae  *********/
-          //float SpO2 = 10.0002*(value)-52.887*(value) + 26.817*(value) + 98.293;
-          //  float SpO2 =((0.81-0.18*(value))/(0.73+0.11*(value)));
+      {
+        if( CES_Pkt_Len  == 9)
+        {
+          CES_Pkt_IR_data[0] =  DataRcvPacket[0];
+          CES_Pkt_IR_data[1] =  DataRcvPacket[1];
+          CES_Pkt_IR_data[2] =  DataRcvPacket[2];
+          CES_Pkt_IR_data[3] =  DataRcvPacket[3];
+            
+          CES_Pkt_RED_data[0] =  DataRcvPacket[4];
+          CES_Pkt_RED_data[1] =  DataRcvPacket[5];
+          CES_Pkt_RED_data[2] =  DataRcvPacket[6];
+          CES_Pkt_RED_data[3] =  DataRcvPacket[7];
+            
+            
+          int data1 = ecsParsePacket(CES_Pkt_IR_data,  CES_Pkt_IR_data.length-1);
+          int data2 = ecsParsePacket(CES_Pkt_RED_data, CES_Pkt_RED_data.length-1);
           
-          float SpO2=110-25*(value);
-
-
-          SpO2 = (int)(SpO2 * 100);
-          SpO2 = SpO2/100;
-          oxygenSaturation.setText(SpO2+"");
+          int SpO2 = (int)DataRcvPacket[8] ; 
+            
+          if(SpO2 != 0)   
+          lblSpO2.setText("Sp02 : "+SpO2 + "%");
+          else
+          lblSpO2.setText("Sp02 probe error");
+            
+      
+           
+           receivedVoltage_RED = (double)data1 * (0.00000057220458984375) ;
+           receivedVoltage_IR = (double)data2 * (0.00000057220458984375) ;
+    
+            time = time+0.1;
+            xdata[arrayIndex] = time;
+                       
+            
+            AvgYdata[arrayIndex] = (float)receivedVoltage_RED;
+            AvgZdata[arrayIndex] = (float)receivedVoltage_IR;
+            value1 = (float)( AvgYdata[arrayIndex] - averageValue(AvgYdata));
+            value1 *=-1 ;
+            value2 = (float)( AvgZdata[arrayIndex] - averageValue(AvgZdata));
+            value2 *= -1 ;
+            ydata[arrayIndex] = value1;
+            zdata[arrayIndex] = value2;
+    
+            float RedDC = (float) averageValue(AvgYdata);
+            float IrDC = (float) averageValue(AvgZdata);
+    
+            arrayIndex++;
+            if (arrayIndex == pSize)
+            {  
+              arrayIndex = 0;
+              time = 0;
+             
+            }
+            if (startPlot) {
+            }
+            a = new BigDecimal(averageValue(ydata));
+            avg = a.setScale(5, BigDecimal.ROUND_HALF_EVEN); 
+            a = new BigDecimal(RMSValue(ydata));
+            rms = a.setScale(5, BigDecimal.ROUND_HALF_EVEN); 
+            a = new BigDecimal(max(ydata));
+            max = a.setScale(5, BigDecimal.ROUND_HALF_EVEN); 
+            a = new BigDecimal(min(ydata));
+            min = a.setScale(5, BigDecimal.ROUND_HALF_EVEN); 
+            msgBox.msg(min, max, avg, rms);
         }
-        if (startPlot) {
-        }
-        a = new BigDecimal(averageValue(ydata));
-        avg = a.setScale(5, BigDecimal.ROUND_HALF_EVEN); 
-        a = new BigDecimal(RMSValue(ydata));
-        rms = a.setScale(5, BigDecimal.ROUND_HALF_EVEN); 
-        a = new BigDecimal(max(ydata));
-        max = a.setScale(5, BigDecimal.ROUND_HALF_EVEN); 
-        a = new BigDecimal(min(ydata));
-        min = a.setScale(5, BigDecimal.ROUND_HALF_EVEN); 
-        msgBox.msg(min, max, avg, rms);
 
         if (logging == true)
         {
@@ -392,12 +419,10 @@ public void customGUI() {
     comList1[i] = comList[i-1];
   }
   start.setEnabled(false);
-  oxygenSaturation.setVisible(false);
   comList = comList1;
   portList.setItems(comList1, 0);
 
-  oxygenSaturation.setFont(new Font("Arial", Font.PLAIN, 55));
-  oxygenSaturation.setLocalColor(2, color(255, 255, 255));
+
 
   start.setLocalColorScheme(GCScheme.CYAN_SCHEME);
 }

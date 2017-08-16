@@ -60,10 +60,6 @@ public void createGUI(){
   start.setLocalColorScheme(GCScheme.GREEN_SCHEME);
   start.addEventHandler(this, "start_click");
   
-  oxygenSaturation = new GLabel(this, 600, 100, 300, 70);
-  oxygenSaturation.setText("0");
-  oxygenSaturation.setTextBold();
-  oxygenSaturation.setOpaque(false);
 }
 
 // Variable declarations 
