@@ -93,12 +93,9 @@ double Redac;
 double SpOpercentage;
 double Ratio;
 
-const int SOMI = 12; 
-const int SIMO = 11; 
-const int SCLK  = 13;
-const int SPISTE = 7; 
-const int SPIDRDY = 2;
-volatile int state = LOW;
+const int SPISTE = 7;  // chip select
+const int SPIDRDY = 2;  // data ready pin 
+volatile int drdy_trigger = LOW;
 
 
 void afe44xxInit (void);
@@ -113,7 +110,7 @@ unsigned long time;
 
 volatile static int SPI_RX_Buff_Count = 0;
 volatile char *SPI_RX_Buff_Ptr;
-volatile int Responsebyte = false;
+volatile int afe44xx_data_ready = false;
 volatile unsigned int pckt =0, buff=0,t=0;
 unsigned long ueegtemp = 0, ueegtemp2 = 0;
 unsigned long IRtemp,REDtemp;
@@ -143,7 +140,7 @@ const uint8_t uch_spo2_table[184]={ 95, 95, 95, 96, 96, 96, 97, 97, 97, 97, 97, 
 static  int32_t an_x[ BUFFER_SIZE]; 
 static  int32_t an_y[ BUFFER_SIZE]; 
 
-int32_t n_buffer_count; //data length
+volatile int8_t n_buffer_count; //data length
 
 int32_t n_spo2;  //SPO2 value
 int8_t ch_spo2_valid;  //indicator to show if the SPO2 calculation is valid
@@ -160,16 +157,18 @@ int dec=0;
 
 void setup()
 {
-   delay(2000) ;   // pause for a moment
    Serial.begin(57600);
+   Serial.println("Intilazition AFE44xx.. ");   
    
+   delay(2000) ;   // pause for a moment
+  
    SPI.begin(); 
    
    // set the directions
    pinMode (SPISTE,OUTPUT);//Slave Select
    pinMode (SPIDRDY,INPUT);// data ready 
  
-   attachInterrupt(0, blink, RISING ); // Digital2 is attached to Data ready pin of AFE is interrupt0 in ARduino
+   attachInterrupt(0, afe44xx_drdy_event, RISING ); // Digital2 is attached to Data ready pin of AFE is interrupt0 in ARduino
 
    // set SPI transmission
    SPI.setClockDivider (SPI_CLOCK_DIV8); // set Speed as 2MHz , 16MHz/ClockDiv
@@ -188,22 +187,23 @@ void setup()
 
    
    afe44xxInit (); 
+   Serial.println("intilazition is done");
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void loop()
 {    
-     if (state == HIGH)  
+     if (drdy_trigger == HIGH)  
      {
         detachInterrupt(0);
         afe44xxWrite(CONTROL0,0x000001);  
         IRtemp = afe44xxRead(LED1VAL);
         afe44xxWrite(CONTROL0,0x000001);  
         REDtemp = afe44xxRead(LED2VAL);   
-        Responsebyte = true;
+        afe44xx_data_ready = true;
      }  
                     
-  if(Responsebyte == true)
+  if(afe44xx_data_ready == true)
   {
       
       IRtemp = (unsigned long) (IRtemp<<10);
@@ -227,44 +227,25 @@ void loop()
       if(n_buffer_count>99)
       {
         
-        estimate_spo2(aun_ir_buffer, 100, aun_red_buffer, &n_spo2, &ch_spo2_valid); 
-       /* if(n_spo2 == -999)
-        spo2_probe_open = true;
+        estimate_spo2(aun_ir_buffer, 100, aun_red_buffer, &n_spo2, &ch_spo2_valid,&n_heart_rate, &ch_hr_valid); 
+        if(n_spo2 == -999)
+          Serial.println("Probe error!!!!");
         else
-        spo2_probe_open = false;
-       */
-      // Serial.println(n_spo2);
+        {  
+            Serial.print("calculating sp02...");
+            Serial.print(" Sp02 : ");
+            Serial.print(n_spo2);
+            Serial.print("% ,"); 
+            Serial.print("Pulse rate :");
+            Serial.print(n_heart_rate);                       
+            Serial.println(" bpm");
+        }
         n_buffer_count=0;
       }         
-
-        
-      DataPacket[0] = seegtemp;
-      DataPacket[1]  = seegtemp>>8;
-      DataPacket[2] = seegtemp>>16;
-      DataPacket[3] = seegtemp>>24; 
-   
-      DataPacket[4]  = seegtemp2;
-      DataPacket[5] = seegtemp2>>8;
-      DataPacket[6] = seegtemp2>>16;
-      DataPacket[7] = seegtemp2>>24;
-
-     if(n_spo2 == -999)       
-      DataPacket[8] = 0;       
-     else
-      DataPacket[8] = n_spo2;       
-
-      for(i=0;i<5;i++)
-      Serial.write(DataPacketHeader[i]);
-                
-      for(i=0; i<datalen; i++) // transmit the data
-      Serial.write(DataPacket[i]);
-
-      for(i=0; i<2; i++) // transmit the data
-      Serial.write(DataPacketFooter[i]);
-      
-      Responsebyte = false;
-      state = LOW;
-      attachInterrupt(0, blink, RISING );      
+     
+      afe44xx_data_ready = false;
+      drdy_trigger = LOW;
+      attachInterrupt(0, afe44xx_drdy_event, RISING );      
        
   }                   
         
@@ -272,9 +253,9 @@ void loop()
 
 ///////// Gets Fired on DRDY event/////////////////////////////
 
-void blink()
+void afe44xx_drdy_event()
 {
-  state = HIGH;
+  drdy_trigger = HIGH;
 }
 
 ////////////////AFE44xx initialization//////////////////////////////////////////
@@ -294,35 +275,35 @@ void afe44xxInit (void)
     
      afe44xxWrite(PRPCOUNT, 0X001F3F);
 
-    afe44xxWrite(LED2STC, 0X001770); //timer control
-    afe44xxWrite(LED2ENDC,0X001F3E); //timer control
-    afe44xxWrite(LED2LEDSTC,0X001770); //timer control
-    afe44xxWrite(LED2LEDENDC,0X001F3F); //timer control
-    afe44xxWrite(ALED2STC, 0X000000); //timer control
-    afe44xxWrite(ALED2ENDC, 0X0007CE); //timer control
-    afe44xxWrite(LED2CONVST,0X000002); //timer control
-    afe44xxWrite(LED2CONVEND, 0X0007CF); //timer control
-    afe44xxWrite(ALED2CONVST, 0X0007D2); //timer control
-    afe44xxWrite(ALED2CONVEND,0X000F9F); //timer control
+    afe44xxWrite(LED2STC, 0X001770); 
+    afe44xxWrite(LED2ENDC,0X001F3E); 
+    afe44xxWrite(LED2LEDSTC,0X001770);
+    afe44xxWrite(LED2LEDENDC,0X001F3F);
+    afe44xxWrite(ALED2STC, 0X000000); 
+    afe44xxWrite(ALED2ENDC, 0X0007CE);
+    afe44xxWrite(LED2CONVST,0X000002); 
+    afe44xxWrite(LED2CONVEND, 0X0007CF);
+    afe44xxWrite(ALED2CONVST, 0X0007D2); 
+    afe44xxWrite(ALED2CONVEND,0X000F9F); 
 
-    afe44xxWrite(LED1STC, 0X0007D0); //timer control
-    afe44xxWrite(LED1ENDC, 0X000F9E); //timer control
-    afe44xxWrite(LED1LEDSTC, 0X0007D0); //timer control
-    afe44xxWrite(LED1LEDENDC, 0X000F9F); //timer control
-    afe44xxWrite(ALED1STC, 0X000FA0); //timer control
-    afe44xxWrite(ALED1ENDC, 0X00176E); //timer control
-    afe44xxWrite(LED1CONVST, 0X000FA2); //timer control
-    afe44xxWrite(LED1CONVEND, 0X00176F); //timer control
-    afe44xxWrite(ALED1CONVST, 0X001772); //timer control
-    afe44xxWrite(ALED1CONVEND, 0X001F3F); //timer control
+    afe44xxWrite(LED1STC, 0X0007D0); 
+    afe44xxWrite(LED1ENDC, 0X000F9E);
+    afe44xxWrite(LED1LEDSTC, 0X0007D0);
+    afe44xxWrite(LED1LEDENDC, 0X000F9F);
+    afe44xxWrite(ALED1STC, 0X000FA0); 
+    afe44xxWrite(ALED1ENDC, 0X00176E);
+    afe44xxWrite(LED1CONVST, 0X000FA2);
+    afe44xxWrite(LED1CONVEND, 0X00176F); 
+    afe44xxWrite(ALED1CONVST, 0X001772); 
+    afe44xxWrite(ALED1CONVEND, 0X001F3F);
 
-    afe44xxWrite(ADCRSTCNT0, 0X000000); //timer control
-    afe44xxWrite(ADCRSTENDCT0,0X000000); //timer control
-    afe44xxWrite(ADCRSTCNT1, 0X0007D0); //timer control
-    afe44xxWrite(ADCRSTENDCT1, 0X0007D0); //timer control
-    afe44xxWrite(ADCRSTCNT2, 0X000FA0); //timer control
-    afe44xxWrite(ADCRSTENDCT2, 0X000FA0); //timer control
-    afe44xxWrite(ADCRSTCNT3, 0X001770); //timer control
+    afe44xxWrite(ADCRSTCNT0, 0X000000);
+    afe44xxWrite(ADCRSTENDCT0,0X000000); 
+    afe44xxWrite(ADCRSTCNT1, 0X0007D0); 
+    afe44xxWrite(ADCRSTENDCT1, 0X0007D0);
+    afe44xxWrite(ADCRSTCNT2, 0X000FA0);
+    afe44xxWrite(ADCRSTENDCT2, 0X000FA0); 
+    afe44xxWrite(ADCRSTCNT3, 0X001770); 
     afe44xxWrite(ADCRSTENDCT3, 0X001770);
   
     delay(1000);
@@ -356,8 +337,8 @@ unsigned long afe44xxRead (uint8_t address)
     return data; // return with 24 bits of read data
 }
 
-
-void estimate_spo2(uint16_t *pun_ir_buffer, int32_t n_ir_buffer_length, uint16_t *pun_red_buffer, int32_t *pn_spo2, int8_t *pch_spo2_valid)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void estimate_spo2(uint16_t *pun_ir_buffer, int32_t n_ir_buffer_length, uint16_t *pun_red_buffer, int32_t *pn_spo2, int8_t *pch_spo2_valid, int32_t *pn_heart_rate, int8_t *pch_hr_valid)
 {
   uint32_t un_ir_mean,un_only_once ;
   int32_t k, n_i_ratio_count;
@@ -402,12 +383,12 @@ void estimate_spo2(uint16_t *pun_ir_buffer, int32_t n_ir_buffer_length, uint16_t
   if (n_npks>=2){
     for (k=1; k<n_npks; k++) n_peak_interval_sum += (an_ir_valley_locs[k] -an_ir_valley_locs[k -1] ) ;
     n_peak_interval_sum =n_peak_interval_sum/(n_npks-1);
-    //*pn_heart_rate =(int32_t)( (FS*60)/ n_peak_interval_sum );
-    //*pch_hr_valid  = 1;
+    *pn_heart_rate =(int32_t)( (FS*60)/ n_peak_interval_sum );
+    *pch_hr_valid  = 1;
   }
   else  { 
-    //*pn_heart_rate = -999; // unable to calculate because # of peaks are too small
-    //*pch_hr_valid  = 0;
+    *pn_heart_rate = -999; // unable to calculate because # of peaks are too small
+    *pch_hr_valid  = 0;
   }
 
   //  load raw value again for SPO2 calculation : RED(=y) and IR(=X)
@@ -477,6 +458,7 @@ void estimate_spo2(uint16_t *pun_ir_buffer, int32_t n_ir_buffer_length, uint16_t
   }
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void find_peak( int32_t *pn_locs, int32_t *n_npks,  int32_t  *pn_x, int32_t n_size, int32_t n_min_height, int32_t n_min_distance, int32_t n_max_num )
 /**
 * \brief        Find peaks
@@ -491,6 +473,8 @@ void find_peak( int32_t *pn_locs, int32_t *n_npks,  int32_t  *pn_x, int32_t n_si
     *n_npks = min( *n_npks, n_max_num );
 }
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void find_peak_above( int32_t *pn_locs, int32_t *n_npks,  int32_t  *pn_x, int32_t n_size, int32_t n_min_height )
 /**
 * \brief        Find peaks above n_min_height
@@ -522,6 +506,8 @@ void find_peak_above( int32_t *pn_locs, int32_t *n_npks,  int32_t  *pn_x, int32_
   }
 }
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void remove_close_peaks(int32_t *pn_locs, int32_t *pn_npks, int32_t *pn_x, int32_t n_min_distance)
 /**
 * \brief        Remove peaks
@@ -551,6 +537,7 @@ void remove_close_peaks(int32_t *pn_locs, int32_t *pn_npks, int32_t *pn_x, int32
   sort_ascend( pn_locs, *pn_npks );
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void sort_ascend(int32_t  *pn_x, int32_t n_size) 
 /**
 * \brief        Sort array
@@ -569,6 +556,7 @@ void sort_ascend(int32_t  *pn_x, int32_t n_size)
   }
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void sort_indices_descend(  int32_t  *pn_x, int32_t *pn_indx, int32_t n_size)
 /**
 * \brief        Sort indices

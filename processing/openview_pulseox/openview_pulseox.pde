@@ -127,6 +127,7 @@ double additionFactor_red, additionFactor_ir;
 float value1, value2;
 float RedAC = 0, RedDC = 0, IrAC = 0, IrDC = 0;
 int count;
+boolean probe_error_detected = false;
 
 import controlP5.*;
 //import http.requests.*;
@@ -278,7 +279,7 @@ void ecsProcessData(char rxch)
     {
       if (rxch==CES_CMDIF_PKT_STOP)
       {
-        if( CES_Pkt_Len  == 9)
+        if( CES_Pkt_Len  == 10)
         {
           CES_Pkt_IR_data[0] =  DataRcvPacket[0];
           CES_Pkt_IR_data[1] =  DataRcvPacket[1];
@@ -295,13 +296,22 @@ void ecsProcessData(char rxch)
           int data2 = ecsParsePacket(CES_Pkt_RED_data, CES_Pkt_RED_data.length-1);
           
           int SpO2 = (int)DataRcvPacket[8] ; 
+          int PulseRate = (int)DataRcvPacket[9] ; 
             
           if(SpO2 != 0)   
-          lblSpO2.setText("Sp02 : "+SpO2 + "%");
-          else
-          lblSpO2.setText("Sp02 probe error");
+          {
             
-      
+            lblSpO2.setText("Sp02 : "+SpO2 + "%" );
+            if(probe_error_detected == false) probe_error_detected = true; 
+          }             
+          else if(SpO2 ==0 && probe_error_detected == true) 
+          {
+            lblSpO2.setColorValue(color(255,0,0));
+            lblSpO2.setText("Sp02 probe error!!");
+            probe_error_detected = false;
+            lblSpO2.setColorValue(color(255,255,255));
+          }
+               
            
            receivedVoltage_RED = (double)data1 * (0.00000057220458984375) ;
            receivedVoltage_IR = (double)data2 * (0.00000057220458984375) ;
