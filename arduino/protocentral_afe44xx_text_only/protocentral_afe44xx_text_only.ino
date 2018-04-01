@@ -4,6 +4,7 @@
 //
 //   Copyright (c) 2016 ProtoCentral
 //   
+//   AFE4490 code based on EVM code from Texas Instruments
 //   SpO2 computation based on original code from Maxim Integrated 
 //
 //   This software is licensed under the MIT License(http://opensource.org/licenses/MIT). 
@@ -16,6 +17,8 @@
 //
 //   For information on how to use the HealthyPi, visit https://github.com/Protocentral/afe44xx_Oximeter
 /////////////////////////////////////////////////////////////////////////////////////////
+
+/* This code displays the computed SpO2 value through the Serial port*/
 
 #include <string.h>
 #include <SPI.h>
@@ -79,6 +82,9 @@
 #define CES_CMDIF_TYPE_DATA   0x02
 #define CES_CMDIF_PKT_STOP    0x0B
 
+#define RESET 4 // RESET pin 
+#define SPISTE 7 // chip select
+#define SPIDRDY 2 // data ready pin 
 
 //int IRheartsignal[count];
 //int Redheartsignal[count];
@@ -93,10 +99,7 @@ double Redac;
 double SpOpercentage;
 double Ratio;
 
-const int SPISTE = 7;  // chip select
-const int SPIDRDY = 2;  // data ready pin 
 volatile int drdy_trigger = LOW;
-
 
 void afe44xxInit (void);
 void afe44xxWrite (uint8_t address, uint32_t data);
@@ -163,8 +166,15 @@ void setup()
    delay(2000) ;   // pause for a moment
   
    SPI.begin(); 
+
+   // configure and set RESET
+   pinMode (RESET,OUTPUT);//Slave Select
+   digitalWrite(RESET, LOW);
+   delay(500);
+   digitalWrite(RESET, HIGH);
+   delay(500);    
    
-   // set the directions
+   // set pin directions
    pinMode (SPISTE,OUTPUT);//Slave Select
    pinMode (SPIDRDY,INPUT);// data ready 
  

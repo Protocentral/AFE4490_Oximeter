@@ -4,6 +4,7 @@
 //
 //   Copyright (c) 2016 ProtoCentral
 //   
+//   AFE4490 code based on EVM code from Texas Instruments
 //   SpO2 computation based on original code from Maxim Integrated 
 //
 //   This software is licensed under the MIT License(http://opensource.org/licenses/MIT). 
@@ -16,6 +17,8 @@
 //
 //   For information on how to use the HealthyPi, visit https://github.com/Protocentral/afe44xx_Oximeter
 /////////////////////////////////////////////////////////////////////////////////////////
+
+/* This code works along with the GUI software in the "gui" folder to visualize the PPG waveforms*/
 
 #include <string.h>
 #include <SPI.h>
@@ -79,6 +82,9 @@
 #define CES_CMDIF_TYPE_DATA   0x02
 #define CES_CMDIF_PKT_STOP    0x0B
 
+#define RESET 4 // RESET pin 
+#define SPISTE 7 // chip select
+#define SPIDRDY 2 // data ready pin 
 
 //int IRheartsignal[count];
 //int Redheartsignal[count];
@@ -93,8 +99,6 @@ double Redac;
 double SpOpercentage;
 double Ratio;
 
-const int SPISTE = 7; // chip select
-const int SPIDRDY = 2; // data ready pin 
 volatile int drdy_trigger = LOW;
 
 void afe44xxInit (void);
@@ -153,8 +157,6 @@ boolean leadoff_deteted = true;
 uint8_t spo2_probe_open = false;
 int dec=0;
 
-
-
 void setup()
 {
    Serial.begin(57600);
@@ -163,8 +165,15 @@ void setup()
    delay(2000) ;   // pause for a moment
   
    SPI.begin(); 
+
+   // configure and set RESET
+   pinMode (RESET,OUTPUT);//Slave Select
+   digitalWrite(RESET, LOW);
+   delay(500);
+   digitalWrite(RESET, HIGH);
+   delay(500);    
    
-   // set the directions
+   // configure pins
    pinMode (SPISTE,OUTPUT);//Slave Select
    pinMode (SPIDRDY,INPUT);// data ready 
  
@@ -175,7 +184,7 @@ void setup()
    SPI.setDataMode (SPI_MODE0);          //Set SPI mode as 0
    SPI.setBitOrder (MSBFIRST);           //MSB first
 
-// Packet structure
+  // Packet structure
   DataPacketHeader[0] = CES_CMDIF_PKT_START_1;  //packet header1 0x0A
   DataPacketHeader[1] = CES_CMDIF_PKT_START_2;  //packet header2 0xFA
   DataPacketHeader[2] = datalen;                // data length 10
@@ -185,7 +194,6 @@ void setup()
   DataPacketFooter[0] = 0x00;
   DataPacketFooter[1] = CES_CMDIF_PKT_STOP;
 
-   
    afe44xxInit (); 
    Serial.println("intilazition is done");
 }
