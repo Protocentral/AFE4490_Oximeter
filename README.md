@@ -44,8 +44,8 @@ Wiring the Breakout to your Arduino
 | SCK              | D13                  |  SPI clock                  |
 | MOSI             | D11                  |  Slave in                   |
 | CS0              | D7                   |  Slave select               |
-| START            | NC                   |  Conversion start Pin       |
-| PWDN             | NC                   |  Power Down/ Reset          |
+| START            | D5                   |  Conversion start Pin       |
+| PWDN             | D4                   |  Power Down/ Reset          |
 | DIAG_END         | NC                   |  Diagnostic output          |
 | LED_ALM          | NC                   |  Cable fault indicator      |
 | PD_ALM           | NC                   |  PD sensor fault indicator  |
