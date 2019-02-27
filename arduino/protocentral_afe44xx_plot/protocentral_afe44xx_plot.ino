@@ -82,9 +82,6 @@
 #define CES_CMDIF_TYPE_DATA   0x02
 #define CES_CMDIF_PKT_STOP    0x0B
 
-#define RESET 4 // RESET pin 
-#define SPISTE 7 // chip select
-#define SPIDRDY 2 // data ready pin 
 
 //int IRheartsignal[count];
 //int Redheartsignal[count];
@@ -99,7 +96,11 @@ double Redac;
 double SpOpercentage;
 double Ratio;
 
+const int SPISTE = 7;  // chip select
+const int SPIDRDY = 2;  // data ready pin 
 volatile int drdy_trigger = LOW;
+const int RESET = 5; // data ready pin 
+const int PWDN = 4; // data ready pin
 
 void afe44xxInit (void);
 void afe44xxWrite (uint8_t address, uint32_t data);
@@ -108,7 +109,7 @@ signed long average_BPM( signed long );
 volatile char DataPacketHeader[6];
 volatile char DataPacket[10];
 volatile char DataPacketFooter[2];
-int datalen = 10;
+int datalen = 0x09;
 unsigned long time;
 
 volatile static int SPI_RX_Buff_Count = 0;
@@ -119,7 +120,6 @@ unsigned long ueegtemp = 0, ueegtemp2 = 0;
 unsigned long IRtemp,REDtemp;
 signed long seegtemp=0, seegtemp2=0;
 volatile int i;
-uint8_t global_heart_rate=0;
 
 
 uint16_t aun_ir_buffer[100]; //infrared LED sensor data
@@ -157,6 +157,8 @@ boolean leadoff_deteted = true;
 uint8_t spo2_probe_open = false;
 int dec=0;
 
+
+
 void setup()
 {
    Serial.begin(57600);
@@ -165,17 +167,18 @@ void setup()
    delay(2000) ;   // pause for a moment
   
    SPI.begin(); 
-
-   // configure and set RESET
-   pinMode (RESET,OUTPUT);//Slave Select
+   
+   // set the directions
+   pinMode (SPISTE,OUTPUT);//Slave Select
+   pinMode (SPIDRDY,INPUT);// data ready 
    digitalWrite(RESET, LOW);
    delay(500);
    digitalWrite(RESET, HIGH);
    delay(500);    
-   
-   // configure pins
-   pinMode (SPISTE,OUTPUT);//Slave Select
-   pinMode (SPIDRDY,INPUT);// data ready 
+    digitalWrite(PWDN, LOW);
+   delay(500);
+   digitalWrite(PWDN, HIGH);
+   delay(500);  
  
    attachInterrupt(0,afe44xx_drdy_event, RISING ); // Digital2 is attached to Data ready pin of AFE is interrupt0 in ARduino
 
