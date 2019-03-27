@@ -4,7 +4,6 @@
 //
 //   Copyright (c) 2016 ProtoCentral
 //   
-//   AFE4490 code based on EVM code from Texas Instruments
 //   SpO2 computation based on original code from Maxim Integrated 
 //
 //   This software is licensed under the MIT License(http://opensource.org/licenses/MIT). 
@@ -17,8 +16,6 @@
 //
 //   For information on how to use the HealthyPi, visit https://github.com/Protocentral/afe44xx_Oximeter
 /////////////////////////////////////////////////////////////////////////////////////////
-
-/* This code works along with the GUI software in the "gui" folder to visualize the PPG waveforms*/
 
 #include <string.h>
 #include <SPI.h>
@@ -96,20 +93,22 @@ double Redac;
 double SpOpercentage;
 double Ratio;
 
-const int SPISTE = 7;  // chip select
-const int SPIDRDY = 2;  // data ready pin 
+const int SPISTE = 7; // chip select
+const int SPIDRDY = 2; // data ready pin 
 volatile int drdy_trigger = LOW;
-const int RESET = 5; // data ready pin 
-const int PWDN = 4; // data ready pin
+const int RESET =5; // data ready pin 
+const int PWDN =4; // data ready pin
+
+
 
 void afe44xxInit (void);
 void afe44xxWrite (uint8_t address, uint32_t data);
-uint32_t afe44xxRead (uint8_t address);
+unsigned long afe44xxRead (uint8_t address);
 signed long average_BPM( signed long );
 volatile char DataPacketHeader[6];
 volatile char DataPacket[10];
 volatile char DataPacketFooter[2];
-int datalen = 0x09;
+int datalen = 10;
 unsigned long time;
 
 volatile static int SPI_RX_Buff_Count = 0;
@@ -120,6 +119,7 @@ unsigned long ueegtemp = 0, ueegtemp2 = 0;
 unsigned long IRtemp,REDtemp;
 signed long seegtemp=0, seegtemp2=0;
 volatile int i;
+uint8_t global_heart_rate=0;
 
 
 uint16_t aun_ir_buffer[100]; //infrared LED sensor data
@@ -169,16 +169,19 @@ void setup()
    SPI.begin(); 
    
    // set the directions
-   pinMode (SPISTE,OUTPUT);//Slave Select
-   pinMode (SPIDRDY,INPUT);// data ready 
+   pinMode (RESET,OUTPUT);//Slave Select
+   pinMode (PWDN,OUTPUT);//Slave Select
+   
    digitalWrite(RESET, LOW);
    delay(500);
    digitalWrite(RESET, HIGH);
    delay(500);    
-    digitalWrite(PWDN, LOW);
+   digitalWrite(PWDN, LOW);
    delay(500);
    digitalWrite(PWDN, HIGH);
-   delay(500);  
+   delay(500); 
+   pinMode (SPISTE,OUTPUT);//Slave Select
+   pinMode (SPIDRDY,INPUT);// data ready 
  
    attachInterrupt(0,afe44xx_drdy_event, RISING ); // Digital2 is attached to Data ready pin of AFE is interrupt0 in ARduino
 
@@ -187,7 +190,7 @@ void setup()
    SPI.setDataMode (SPI_MODE0);          //Set SPI mode as 0
    SPI.setBitOrder (MSBFIRST);           //MSB first
 
-  // Packet structure
+// Packet structure
   DataPacketHeader[0] = CES_CMDIF_PKT_START_1;  //packet header1 0x0A
   DataPacketHeader[1] = CES_CMDIF_PKT_START_2;  //packet header2 0xFA
   DataPacketHeader[2] = datalen;                // data length 10
@@ -197,6 +200,7 @@ void setup()
   DataPacketFooter[0] = 0x00;
   DataPacketFooter[1] = CES_CMDIF_PKT_STOP;
 
+   
    afe44xxInit (); 
    Serial.println("intilazition is done");
 }

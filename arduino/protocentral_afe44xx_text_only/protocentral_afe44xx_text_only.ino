@@ -4,7 +4,6 @@
 //
 //   Copyright (c) 2016 ProtoCentral
 //   
-//   AFE4490 code based on EVM code from Texas Instruments
 //   SpO2 computation based on original code from Maxim Integrated 
 //
 //   This software is licensed under the MIT License(http://opensource.org/licenses/MIT). 
@@ -17,8 +16,6 @@
 //
 //   For information on how to use the HealthyPi, visit https://github.com/Protocentral/afe44xx_Oximeter
 /////////////////////////////////////////////////////////////////////////////////////////
-
-/* This code displays the computed SpO2 value through the Serial port*/
 
 #include <string.h>
 #include <SPI.h>
@@ -99,8 +96,7 @@ double Ratio;
 const int SPISTE = 7;  // chip select
 const int SPIDRDY = 2;  // data ready pin 
 volatile int drdy_trigger = LOW;
-const int RESET = 5; // data ready pin 
-const int PWDN = 4; // data ready pin
+
 
 void afe44xxInit (void);
 void afe44xxWrite (uint8_t address, uint32_t data);
@@ -171,14 +167,6 @@ void setup()
    // set the directions
    pinMode (SPISTE,OUTPUT);//Slave Select
    pinMode (SPIDRDY,INPUT);// data ready 
-   digitalWrite(RESET, LOW);
-   delay(500);
-   digitalWrite(RESET, HIGH);
-   delay(500);    
-    digitalWrite(PWDN, LOW);
-   delay(500);
-   digitalWrite(PWDN, HIGH);
-   delay(500); 
  
    attachInterrupt(0, afe44xx_drdy_event, RISING ); // Digital2 is attached to Data ready pin of AFE is interrupt0 in ARduino
 
