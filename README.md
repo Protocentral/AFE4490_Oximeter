@@ -6,6 +6,8 @@ ProtoCentral AF4490-based Pulse-oximeter shield for Arduino
 [Dont have it yet? Buy one here: ProtoCentral AFE4490 Pulse Oximeter Breakout Board Kit (PC-MED-0405)](https://protocentral.com/product/protocentral-afe4490-pulse-oximeter-breakout-board-kit/)
 ![Pulse Oximeter Breakout](extras/AFE4490_Breakout.jpg)
 
+### If you're looking for the Arduino library, it's now moved here: https://github.com/Protocentral/protocentral-afe4490-arduino
+
 This pulse oximetry shield from ProtoCentral uses the AFE4490 IC to enble your Arduino to measure heart rate as well as SpO2 values.
 Pulse oximetry is an indirect method of measuring the oxygen levels in the blood. The sensor measures the skin's absorbance of red and IR light wavelengths to calculate the oxygen levels. The measurement is done by a probe that clips on to a finger and contains emitters as well as a light sensor.
 Since the amount of blood flowing through any blood vessel varies (pulses) with the rate of blood from the heart, this can also be used for measuring heartrate without the need for connecting any ECG electrodes. 
@@ -34,6 +36,7 @@ Connecting the shield to your Arduino
 -------------------------------------
  Connect the ECG/Respiration shield to the Arduino by stacking it on top of your Arduino. This shield uses the SPI interface  to communicate with the Arduino. Since this includes the ICSP header, which is used on newer Arduinos for SPI communication,  this shield is also compatible newer Arduino boards such as the Arduino Yun and Due.
 
+## The Arduino library for this is now available here: https://github.com/Protocentral/protocentral-afe4490-arduino
 
 Wiring the Breakout to your Arduino
 ------------------------------------
@@ -54,8 +57,10 @@ Wiring the Breakout to your Arduino
 | PD_ALM           | NC                   |  PD sensor fault indicator  |
 | VCC              | +5v                  |  Supply voltage             |
 
-Using Processing - Data Visualization Software (New!)
------------------------------------------------------
+
+
+Using Processing - Data Visualization Software
+----------------------------------------------
  Processing is a data visualization software, in existence since 2001, used by artists and scientists alike. It’s an open source coding framework based on Java. If you are familiar with the Arduino environment, the Processing IDE is similar and you won’t have much of a learning curve to climb!
  
  The following are the steps to run the code:
