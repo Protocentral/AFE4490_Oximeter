@@ -19,26 +19,26 @@ Features:
 * Calculates Spo2 values with provided code
 * Real-time display of PPG (Photoplethysmogram)
 
-Includes:
+## Includes:
 ----------
 * 1x ProtoCentral Pulse Oximetry shield for Arduino
 * 1x Set of stackable Arduino headers
 * 1x "Nellcor compatible" Pulse oximetry finger probe. 
 
-Repository Contents
+## Repository Contents
 -------------------
 * **/arduino** - Arduino library and example sketch
 * **/hardware** - All Eagle design files (.brd, .sch)
 * **/extras** - datasheets and extras
 * **/processing** - Processing-based Application
 
-Connecting the shield to your Arduino
+## Connecting the shield to your Arduino
 -------------------------------------
  Connect the ECG/Respiration shield to the Arduino by stacking it on top of your Arduino. This shield uses the SPI interface  to communicate with the Arduino. Since this includes the ICSP header, which is used on newer Arduinos for SPI communication,  this shield is also compatible newer Arduino boards such as the Arduino Yun and Due.
 
 ## The Arduino library for this is now available here: https://github.com/Protocentral/protocentral-afe4490-arduino
 
-Wiring the Breakout to your Arduino
+## Wiring the Breakout to your Arduino
 ------------------------------------
  If you have bought the breakout the connection with the Arduino board is as follows:
  
@@ -59,7 +59,7 @@ Wiring the Breakout to your Arduino
 
 
 
-Using Processing - Data Visualization Software
+## Using Processing - Data Visualization Software
 ----------------------------------------------
  Processing is a data visualization software, in existence since 2001, used by artists and scientists alike. It’s an open source coding framework based on Java. If you are familiar with the Arduino environment, the Processing IDE is similar and you won’t have much of a learning curve to climb!
  
@@ -109,13 +109,13 @@ Once downloaded, unzip the archive and install the app as per your OS.
 
  d. Once the GUI is running, select the port connect with pulse oximeter shield from the "SELECT PORT" dropdown as shown in the figure below
 
-![Port Selection](https://github.com/Protocentral/AFE4400_Oximeter/blob/master/Processing/Final%20Output/Port-Selection.png)
+![Port Selection](gui/Final%20Output/Port-Selection.png)
 
  e. Once the port selection is appropriate the START button gets enabled. Click "START" to initiate visualization
 
  f. You should see the PPG ( RED and IR) waves generated with the values obtained from the AFE4490 Oximeter Shield Breakout Board as shown below.
 
-![PPG Wave Form in Processing](https://github.com/Protocentral/AFE4490_Oximeter/blob/master/Processing/Final%20Output/output.gif)
+![PPG Wave Form in Processing](gui/Final%20Output/output.gif)
 
 License Information
 ===================
